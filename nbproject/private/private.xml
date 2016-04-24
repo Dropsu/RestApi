@@ -4,8 +4,11 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/Dropsu/Documents/NetBeansProjects/Turrest/web/index.html</file>
+            <file>file:/C:/Users/Dropsu/Documents/NetBeansProjects/Turrest/web/GoogleMapsApi.js</file>
+            <file>file:/C:/Users/Dropsu/Documents/NetBeansProjects/Turrest/src/java/ds/db/DBconnection.java</file>
             <file>file:/C:/Users/Dropsu/Documents/NetBeansProjects/Turrest/src/java/ds/GenericResource.java</file>
-            <file>file:/C:/Users/Dropsu/Documents/NetBeansProjects/Turrest/src/java/ds/ApplicationConfig.java</file>
+            <file>file:/C:/Users/Dropsu/Documents/NetBeansProjects/Turrest/src/java/ds/json/SampleGoogleJson.java</file>
+            <file>file:/C:/Users/Dropsu/Documents/NetBeansProjects/Turrest/src/java/ds/db/test/DbImportTest.java</file>
         </group>
     </open-files>
 </project-private>
