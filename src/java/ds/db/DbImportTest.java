@@ -3,18 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ds.db.test;
+package ds.db;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.ResultSet;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import java.sql.*;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import ds.db.DBconnection;
-
 /**
  *
  * @author Dropsu
@@ -27,7 +20,7 @@ public class DbImportTest {
     public static String test ()
     {
         String imie;
-        Connection con = DBconnection.pol();
+        Connection con = DbConnection.pol();
         
         try {
          Statement stmt = con.createStatement( ); // tworzy obekt "zdanie" przywiazany do wskazanego polaczenia

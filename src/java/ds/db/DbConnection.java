@@ -8,8 +8,6 @@ package ds.db;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.ResultSet;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -20,7 +18,7 @@ import javax.ws.rs.core.MediaType;
  * @author Dropsu
  */
 @Path("/dbase")
-public class DBconnection {
+public class DbConnection {
     
     public static String status_polaczenia;
     
@@ -33,12 +31,12 @@ public class DBconnection {
     }
         
           try {
+              status_polaczenia = "Polaczenie z baza danych smiga i buczy";
                con = DriverManager.getConnection( "jdbc:oracle:thin:@localhost:1521:XE", "dropsu", "damiuq55" );
           }
           catch(SQLException err) {
             status_polaczenia = err.getMessage();
           }
-          status_polaczenia = "Polaczenie z baza danych smiga i buczy";
           return con;
     }
     

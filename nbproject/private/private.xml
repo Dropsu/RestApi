@@ -5,10 +5,9 @@
         <group>
             <file>file:/C:/Users/Dropsu/Documents/NetBeansProjects/Turrest/web/index.html</file>
             <file>file:/C:/Users/Dropsu/Documents/NetBeansProjects/Turrest/web/GoogleMapsApi.js</file>
-            <file>file:/C:/Users/Dropsu/Documents/NetBeansProjects/Turrest/src/java/ds/db/DBconnection.java</file>
-            <file>file:/C:/Users/Dropsu/Documents/NetBeansProjects/Turrest/src/java/ds/GenericResource.java</file>
-            <file>file:/C:/Users/Dropsu/Documents/NetBeansProjects/Turrest/src/java/ds/json/SampleGoogleJson.java</file>
-            <file>file:/C:/Users/Dropsu/Documents/NetBeansProjects/Turrest/src/java/ds/db/test/DbImportTest.java</file>
+            <file>file:/C:/Users/Dropsu/Documents/NetBeansProjects/Turrest/src/java/ds/route/ReceiveRoute.java</file>
+            <file>file:/C:/Users/Dropsu/Documents/NetBeansProjects/Turrest/src/java/ds/db/DbImportTest.java</file>
+            <file>file:/C:/Users/Dropsu/Documents/NetBeansProjects/Turrest/src/java/ds/db/DbAddCityTable.java</file>
         </group>
     </open-files>
 </project-private>

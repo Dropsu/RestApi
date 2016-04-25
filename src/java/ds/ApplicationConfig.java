@@ -24,8 +24,10 @@ public class ApplicationConfig extends Application {
 
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(ds.GenericResource.class);
-        resources.add(ds.db.DBconnection.class);
-        resources.add(ds.db.test.DbImportTest.class);
+        resources.add(ds.db.DbAddCityTable.class);
+        resources.add(ds.db.DbConnection.class);
+        resources.add(ds.db.DbImportTest.class);
+        resources.add(ds.route.ReceiveRoute.class);
     }
    
     
