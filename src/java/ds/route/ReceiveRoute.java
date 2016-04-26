@@ -6,6 +6,7 @@
 package ds.route;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.json.*;
 /**
  *
  * @author Dropsu
@@ -13,11 +14,13 @@ import javax.ws.rs.core.MediaType;
 @Path ("/receive_route")
 public class ReceiveRoute {
    
+    JsonArray miejsca;
     @POST
     @Produces("text/plain")
     @Consumes(MediaType.APPLICATION_JSON)
-    public String getRoute (String data)
+    public String getRoute (JsonArray data)
     {
-    return data;
+        miejsca = data;
+        return miejsca.getString(1) + " *** POBIERANIE POSZLO OK *** ";
     }
 }
