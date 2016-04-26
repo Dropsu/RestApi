@@ -8,6 +8,7 @@
         var miejsca_posr = [];
         var i = -1;
         var travel_mode = google.maps.TravelMode.WALKING;
+        var city_name;
         
         var map = new google.maps.Map(document.getElementById('map'), {
           mapTypeControl: false,
@@ -21,6 +22,7 @@
         map.data.loadGeoJson('https://storage.googleapis.com/maps-devrel/google.json');
 
         var origin_input = document.getElementById('origin-input');
+        var city_input = document.getElementById('city-input');
         var modes = document.getElementById('mode-selector');
 
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(origin_input);
@@ -28,6 +30,12 @@
 
         var origin_autocomplete = new google.maps.places.Autocomplete(origin_input);
         origin_autocomplete.bindTo('bounds', map);
+
+
+        var city_autocomplete = new google.maps.places.Autocomplete(city_input);
+        city_autocomplete.bindTo('bounds', map);
+        var regions = ["(regions)"];
+        city_autocomplete.setTypes(regions); //googlemaps dopusci tylko miasta do wyboru w tym inpucie
 
         
         function setupClickListener(id, mode) {
@@ -57,6 +65,13 @@
                 directionsService, directionsDisplay, miejsca_posr);
                 map.setZoom(17);
         });
+        
+           city_autocomplete.addListener('place_changed', function() {
+          city_name = city_autocomplete.getPlace().formatted_address;
+          document.getElementById('city-input').style="background-color: #87c77d";
+          map.setCenter(city_autocomplete.getPlace().geometry.location);
+          map.setZoom(15);
+        });
 
         function route(origin_place_id, destination_place_id, travel_mode,
                        directionsService, directionsDisplay, miejsca_posr) {
@@ -83,8 +98,8 @@
           var saveButton = document.getElementById("saveButton");
        saveButton.addEventListener('click',function () {
            var route =
-             {city_name:"Lublin",
-         route_id:"Lublin123",
+             {city_name:city_name,
+         route_id:city_name + "123",
          route_length_km:5.5,
          estimated_walk_time_in_mins:120,
          number_of_places:5,
