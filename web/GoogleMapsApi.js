@@ -78,15 +78,21 @@
           });
         }
         
-        // *** WYSYLANIE REQUESTOW ***
-        
-                
+        // *** WYSYLANIE TRAS ***
+       
           var saveButton = document.getElementById("saveButton");
        saveButton.addEventListener('click',function () {
+           var route =
+             {city_name:"Lublin",
+         route_id:"Lublin123",
+         route_length_km:5.5,
+         estimated_walk_time_in_mins:120,
+         number_of_places:5,
+         places:miejsca};
          $.ajax({
     type: 'POST',
-    url: 'http://localhost:8080/Turrest/api/receive_route',
-    data:  JSON.stringify(miejsca),
+    url: 'http://localhost:8080/Turrest/api/send_route',
+    data:  JSON.stringify(route),
     success: function(data) { alert('data: ' + data); }, // przy sukcesie wyswietl odp servera
     contentType: "application/json", // typ wysylanych danych
     dataType: 'text' // typ odpowiedzi jakiej oczekuje

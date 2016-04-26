@@ -26,7 +26,7 @@ public class ApplicationConfig extends Application {
         resources.add(ds.GenericResource.class);
         resources.add(ds.db.DbConnection.class);
         resources.add(ds.db.DbImportTest.class);
-        resources.add(ds.route.ReceiveRoute.class);
+        resources.add(ds.route.Route.class);
     }
    
     

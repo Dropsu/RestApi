@@ -5,11 +5,17 @@
  */
 package ds.route;
 import javax.json.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 /**
  *
  * @author Dropsu
  */
+@Path ("/send_route")
 public class Route {
     
     String route_id;
@@ -19,7 +25,9 @@ public class Route {
     int number_of_places;
     Place miejsca [];
     
-    Route (String route_id,
+    public Route () {}; // potrzebny bezargumentowy konst. bo JAVA musi stworzyc obiekt by otrzymac POSTA
+    
+    public Route (String route_id,
     String city_name,
     float route_length_km,
     int estimated_walk_time_in_mins,
@@ -40,5 +48,13 @@ public class Route {
         miejsca[i].route_id = this.route_id;
     }
     }
- 
+    
+    @POST
+    @Produces("text/plain")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String receiveRoute (JsonObject data)
+    {
+        return data.getString("city_name") + ": " + data.getJsonArray("places");
+    }
+    
 }
