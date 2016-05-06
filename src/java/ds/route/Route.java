@@ -5,34 +5,27 @@
  */
 package ds.route;
 import javax.json.*;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 
 /**
  *
  * @author Dropsu
  */
-@Path ("/send_route")
+
 public class Route {
     
-    String route_id;
-    String city_name;
-    float route_length_km;
-    int estimated_walk_time_in_mins;
-    int number_of_places;
-    Place miejsca [];
+    public String route_id;
+    public String city_name;
+    public String route_length_km;
+    public int estimated_walk_time_in_mins;
+    public int number_of_places;
+    public Place miejsca [];
     
-    public Route () {}; // potrzebny bezargumentowy konst. bo JAVA musi stworzyc obiekt by otrzymac POSTA
     
     public Route (String route_id,
     String city_name,
-    float route_length_km,
+    String route_length_km,
     int estimated_walk_time_in_mins,
     int number_of_places,
-    Place miejsca [],
     JsonArray jsonMiejsca)
     {
     this.route_id = route_id;
@@ -40,21 +33,13 @@ public class Route {
     this.route_length_km=route_length_km;
     this.estimated_walk_time_in_mins = estimated_walk_time_in_mins;
     this.number_of_places = number_of_places;
+    miejsca = new Place [number_of_places];
     
     for (int i=0; i<jsonMiejsca.size();i++)
     {
-        miejsca[i].place_name=jsonMiejsca.getString(i);
-        miejsca[i].index_number_in_route=i;
-        miejsca[i].route_id = this.route_id;
+        Place nowe = new Place(jsonMiejsca.getString(i),i,this.route_id);
+        this.miejsca[0] = nowe;
     }
-    }
-    
-    @POST
-    @Produces("text/plain")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public String receiveRoute (JsonObject data)
-    {
-        return data.getString("city_name") + ": " + data.getJsonArray("places");
     }
     
 }

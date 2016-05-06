@@ -67,9 +67,10 @@
         });
         
            city_autocomplete.addListener('place_changed', function() {
+          document.getElementById('city-input').style="background-color: #ff6666";
           city_name = city_autocomplete.getPlace().formatted_address;
-          document.getElementById('city-input').style="background-color: #87c77d";
           map.setCenter(city_autocomplete.getPlace().geometry.location);
+          document.getElementById('city-input').style="background-color: #87c77d";
           map.setZoom(15);
         });
 
@@ -100,9 +101,9 @@
            var route =
              {city_name:city_name,
          route_id:city_name + "123",
-         route_length_km:5.5,
+         route_length_km:"5.5",
          estimated_walk_time_in_mins:120,
-         number_of_places:5,
+         number_of_places:2,
          places:miejsca};
          $.ajax({
     type: 'POST',
