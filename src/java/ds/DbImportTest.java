@@ -21,7 +21,7 @@ public class DbImportTest {
     public static String test ()
     {
         String imie;
-        Connection con = DbConnection.pol();
+        Connection con = DbConnection.establishConnection();
         
         try {
          Statement stmt = con.createStatement( ); // tworzy obekt "zdanie" przywiazany do wskazanego polaczenia

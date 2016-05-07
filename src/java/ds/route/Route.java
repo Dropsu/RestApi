@@ -30,15 +30,16 @@ public class Route {
     {
     this.route_id = route_id;
     this.city_name = city_name;
-    this.route_length_km=route_length_km;
+    this.route_length_km= route_length_km;
     this.estimated_walk_time_in_mins = estimated_walk_time_in_mins;
     this.number_of_places = number_of_places;
+    
     miejsca = new Place [number_of_places];
     
     for (int i=0; i<jsonMiejsca.size();i++)
     {
         Place nowe = new Place(jsonMiejsca.getString(i),i,this.route_id);
-        this.miejsca[0] = nowe;
+        this.miejsca[i] = nowe;
     }
     }
     

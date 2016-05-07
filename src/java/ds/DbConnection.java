@@ -12,17 +12,20 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import ds.route.*;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 /**
  *
  * @author Dropsu
  */
-@Path("/dbase")
+
 public class DbConnection {
     
     public static String status_polaczenia;
     
-    public static Connection pol()
+    public static Connection establishConnection()
     {     
         Connection con = null;
     try {
@@ -40,12 +43,50 @@ public class DbConnection {
           return con;
     }
     
-    @GET
-    @Produces(MediaType.TEXT_HTML)
     public String test_polaczenia ()
     {
-        pol();
+        establishConnection();
         return status_polaczenia;
     }
+    
+    
+    public static String addRouteToDb (Route routeToAdd)
+    {
+    Connection con = DbConnection.establishConnection();
+     try {
+         Statement stmt = con.createStatement( ); // tworzy obekt "zdanie" przywiazany do wskazanego polaczenia
+                
+         String SQL = "INSERT INTO Routes VALUES ("
+                 + "'"+routeToAdd.route_id +"',"
+                 + "'"+routeToAdd.city_name +"',"
+                 + routeToAdd.route_length_km+","
+                 + routeToAdd.estimated_walk_time_in_mins+","
+                 + routeToAdd.number_of_places
+                 + ")"; // zmienna SQL przechowuje SQL...
+                
+         stmt.executeQuery( SQL ); 
+         
+         for(int i=0;i<routeToAdd.number_of_places;i++)
+         {
+            SQL = "INSERT INTO Places VALUES ("
+                 + "'"+routeToAdd.miejsca[i].place_name+"',"
+                    + routeToAdd.miejsca[i].index_number_in_route+","
+                 + "'"+routeToAdd.miejsca[i].route_id+"'"
+                    + ")"; 
+            stmt.executeQuery( SQL );
+         }
+         
+         
+         con.close();
+                
+        
+        }catch (SQLException err)
+        {
+            return err.getMessage();
+        }
+    return "OK";
+    }
+    
+    
     
 }

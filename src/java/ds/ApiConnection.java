@@ -34,7 +34,8 @@ public class ApiConnection {
     public String receiveRoute (JsonObject data)
     {
         Route testowaTrasa = RouteConverter.jsonToJavaObj(data);
-        return testowaTrasa.route_id;
+        String polZBD = DbConnection.addRouteToDb(testowaTrasa);
+        return polZBD;
     }
     
 }
