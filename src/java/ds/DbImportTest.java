@@ -5,7 +5,7 @@
  */
 package ds;
 
-import ds.DbConnection;
+
 import java.sql.*;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -21,7 +21,7 @@ public class DbImportTest {
     public static String test ()
     {
         String imie;
-        Connection con = DbConnection.establishConnection();
+        Connection con = DbCommunication.establishConnection();
         
         try {
          Statement stmt = con.createStatement( ); // tworzy obekt "zdanie" przywiazany do wskazanego polaczenia

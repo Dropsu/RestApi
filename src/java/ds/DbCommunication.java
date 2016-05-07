@@ -8,10 +8,6 @@ package ds;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import ds.route.*;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -21,7 +17,7 @@ import java.sql.Statement;
  * @author Dropsu
  */
 
-public class DbConnection {
+public class DbCommunication {
     
     public static String status_polaczenia;
     
@@ -34,7 +30,6 @@ public class DbConnection {
     }
         
           try {
-              status_polaczenia = "Polaczenie z baza danych smiga i buczy";
                con = DriverManager.getConnection( "jdbc:oracle:thin:@localhost:1521:XE", "dropsu", "damiuq55" );
           }
           catch(SQLException err) {
@@ -45,6 +40,7 @@ public class DbConnection {
     
     public String test_polaczenia ()
     {
+        status_polaczenia = "Connection Established";
         establishConnection();
         return status_polaczenia;
     }
@@ -52,7 +48,7 @@ public class DbConnection {
     
     public static String addRouteToDb (Route routeToAdd)
     {
-    Connection con = DbConnection.establishConnection();
+    Connection con = DbCommunication.establishConnection();
      try {
          Statement stmt = con.createStatement( ); // tworzy obekt "zdanie" przywiazany do wskazanego polaczenia
                 
@@ -85,6 +81,53 @@ public class DbConnection {
             return err.getMessage();
         }
     return "OK";
+    }
+    
+    public static Route getRouteFromDb (String routeId) // do zapytania o podział obiowiazkow klas (z rs)
+    {
+          Connection con = DbCommunication.establishConnection();
+        
+        try {
+         Statement stmt = con.createStatement( ); 
+                String SQL = "SELECT * FROM Routes WHERE Route_id="
+                        + "'" + routeId + "'";
+                ResultSet rsRoute = stmt.executeQuery( SQL ); 
+    rsRoute.next();
+    
+       String route_id = rsRoute.getString("ROUTE_ID");
+       String city_name = rsRoute.getString("CITY_NAME");
+       String route_length_km = rsRoute.getString("ROUTE_LENGTH_KM");
+       int estimated_walk_time_in_mins = rsRoute.getInt("ESTIMATED_WALK_TIME_IN_MINS");
+       int number_of_places = rsRoute.getInt("NUMBER_OF_PLACES");
+                
+       //Przygotowywanie tablicy miejsc
+       
+                SQL = "SELECT * FROM Places WHERE Route_id="
+                        + "'" + routeId + "'";
+                ResultSet rsPlace = stmt.executeQuery( SQL );
+                
+                rsPlace.next();
+                
+                Place miejsca [] = new Place [number_of_places];
+               
+        for (int i=0; i<number_of_places;i++)
+    {
+        Place nowe = new Place(rsPlace.getString("PLACE_NAME"),rsPlace.getInt("INDEX_NUMBER_IN_ROUTE"),rsPlace.getString("ROUTE_ID"));
+        miejsca[i]=nowe;
+        rsPlace.next();
+    }
+        
+        Route generatedRoute = new Route(route_id,city_name,route_length_km,
+                estimated_walk_time_in_mins,number_of_places,miejsca);
+        
+        return generatedRoute;
+                
+                
+        }catch (SQLException err)
+        {
+            return null;
+        }
+        
     }
     
     

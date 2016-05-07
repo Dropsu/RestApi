@@ -15,7 +15,7 @@ public class Place {
     public int index_number_in_route;
     public String route_id;
     
-    Place (String place_name, int index_number_in_route,String route_id)
+    public Place (String place_name, int index_number_in_route,String route_id)
     {
         this.place_name = place_name;
         this.index_number_in_route = index_number_in_route;

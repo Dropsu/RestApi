@@ -43,4 +43,21 @@ public class Route {
     }
     }
     
+    public Route (String route_id,
+    String city_name,
+    String route_length_km,
+    int estimated_walk_time_in_mins,
+    int number_of_places,
+    Place miejsca [])
+    {
+    this.route_id = route_id;
+    this.city_name = city_name;
+    this.route_length_km= route_length_km;
+    this.estimated_walk_time_in_mins = estimated_walk_time_in_mins;
+    this.number_of_places = number_of_places;
+    this.miejsca = miejsca;
+    
+   
+    }
+    
 }
