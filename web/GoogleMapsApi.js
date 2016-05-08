@@ -47,13 +47,9 @@
         setupClickListener('changemode-walking', google.maps.TravelMode.WALKING);
         setupClickListener('changemode-driving', google.maps.TravelMode.DRIVING);
 
-
-
-        origin_autocomplete.addListener('place_changed', function() {
-          document.getElementById('origin-input').value = "";
-          miejsca.push(origin_autocomplete.getPlace().formatted_address);
-          i++;
-          miejsca_posr = [];
+function setMiejscaPosr ()
+{
+    miejsca_posr = [];
           for(var j=1;j<i;j++)
           {
               miejsca_posr.push({
@@ -61,6 +57,13 @@
         stopover: true
       });
           }
+}
+
+        origin_autocomplete.addListener('place_changed', function() {
+          document.getElementById('origin-input').value = "";
+          miejsca.push(origin_autocomplete.getPlace().formatted_address);
+          i++;
+          setMiejscaPosr();
           route(miejsca[0], miejsca[i], travel_mode,
                 directionsService, directionsDisplay, miejsca_posr);
                 map.setZoom(17);
@@ -109,14 +112,42 @@
     type: 'POST',
     url: 'http://localhost:8080/Turrest/api/send_route',
     data:  JSON.stringify(route),
-    success: function(data) { alert('data: ' + data); }, // przy sukcesie wyswietl odp servera
+    success: function(data) { alert('wynik: ' + data); }, // przy sukcesie wyswietl odp servera
     contentType: "application/json", // typ wysylanych danych
     dataType: 'text' // typ odpowiedzi jakiej oczekuje
 });
     });
+        // *** ODBIERANIE TRAS ***
         
         
+        function wyswietlOtrzymanaTrase (json)
+        {
+             for(var j=0;j<json.miejsca.length;j++)
+        {
+            miejsca[j]=json.miejsca[j];
+            i++;
+        }
+        setMiejscaPosr();
+        route(miejsca[0], miejsca[i], travel_mode,
+                directionsService, directionsDisplay, miejsca_posr);
+        }
+        
+        var testButton = document.getElementById("receiving-test");
+       testButton.addEventListener('click',function (){
+           
+           $.ajax({ 
+    type: 'GET', 
+    url: 'http://localhost:8080/Turrest/api/search_route/Poznan123', 
+    data: { get_param: 'value' }, 
+    dataType: 'json',
+    success: function (data) { 
+        //prototyp wyswietlania działa!
+        wyswietlOtrzymanaTrase(data);
+        
+    }
+});
+       });
        
-    // *** DODAWANIE MIEJSC Z INFOWINDOWSOW ***
+    
  
       }
