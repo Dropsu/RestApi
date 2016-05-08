@@ -5,8 +5,8 @@
  */
 package ds;
 
-import ds.route.Route;
-import javax.json.JsonObject;
+
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
@@ -15,7 +15,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.PathParam;
 import ds.route.Route;
-import javax.json.JsonArray;
+import java.math.BigDecimal;
+import javax.json.*;
 
 /**
  *
@@ -26,18 +27,25 @@ public class ApiCommunication {
     
       @GET // kazdy path moze miec tylko po jednej motodzie GET, POST itd.
     @Produces(MediaType.TEXT_HTML)
-    public String getVerification() {  //weryfikacja
-        return "Wszystko jest fine - REST";
+    public String getDocumentation() {  //weryfikacja
+        return "<h1>Api Documentation </h1>"
+                + "<p>Avaliable methods:</p>"
+                + "<h3>1) Search for route by its name</h3>"
+                + ".../api/search_route/{routeId}<br>"
+                + "Input: 'routeId' -> Name of route to search for<br>"
+                + "Result: route as JSON ";
+                
     }
+    
+    
     @Path ("/send_route")
     @POST
     @Produces("text/plain")
     @Consumes(MediaType.APPLICATION_JSON)
-    public String receiveRoute (JsonObject data)
+    public void receiveRoute (JsonObject data)
     {
-        Route testowaTrasa = jsonToJavaObj(data);
-        String polZBD = DbCommunication.addRouteToDb(testowaTrasa);
-        return polZBD;
+        Route routeToAdd = jsonToJavaObj(data);
+        DbCommunication.addRouteToDb(routeToAdd);
     }
     
     @Path("search_route/{routeId}")
@@ -45,8 +53,8 @@ public class ApiCommunication {
     @Produces("text/plain")
     public String searchForRoute (@PathParam("routeId") String routeId)
     {
-        Route nowaTrasa = DbCommunication.getRouteFromDb(routeId);
-        return nowaTrasa.city_name;
+        Route routeFromDb = DbCommunication.getRouteFromDb(routeId);
+        return javaObjToJson(routeFromDb).toString();
     }
     
     static public Route jsonToJavaObj (JsonObject data)
@@ -62,4 +70,27 @@ public class ApiCommunication {
     Route trasa = new Route(route_id,city_name,route_length_km,estimated_walk_time_in_mins,number_of_places,jsonMiejsca);
     return trasa;
     }
+    
+    static public JsonObject javaObjToJson (Route routeToConvert)
+    {
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        
+        for(int i =0;i<routeToConvert.number_of_places;i++) {
+        arrayBuilder.add(routeToConvert.miejsca[i].place_name);
+        }
+        
+        JsonArray miejsca = arrayBuilder.build();
+        
+        
+      JsonObject jsonToSend = Json.createObjectBuilder()
+              .add("city_name", routeToConvert.city_name)
+              .add("route_id",routeToConvert.route_id)
+              .add("route_length_km",routeToConvert.route_length_km)
+              .add("estimated_walk_time_in_mins",routeToConvert.estimated_walk_time_in_mins)
+              .add("number_of_places", routeToConvert.number_of_places)
+              .add("miejsca",miejsca)
+              .build();
+     return jsonToSend;
+    } 
+    
 }

@@ -71,28 +71,24 @@ public class DbCommunication {
                     + ")"; 
             stmt.executeQuery( SQL );
          }
-         
-         
+              
          con.close();
                 
-        
-        }catch (SQLException err)
-        {
-            return err.getMessage();
-        }
+        }catch (SQLException err) {return err.getMessage();}
+       
     return "OK";
     }
     
-    public static Route getRouteFromDb (String routeId) // do zapytania o podział obiowiazkow klas (z rs)
+    public static Route getRouteFromDb (String routeId)
     {
           Connection con = DbCommunication.establishConnection();
-        
+          
         try {
          Statement stmt = con.createStatement( ); 
-                String SQL = "SELECT * FROM Routes WHERE Route_id="
-                        + "'" + routeId + "'";
+                String SQL = "SELECT * FROM Routes WHERE Route_id=" + "'" + routeId + "'";
                 ResultSet rsRoute = stmt.executeQuery( SQL ); 
     rsRoute.next();
+    
     
        String route_id = rsRoute.getString("ROUTE_ID");
        String city_name = rsRoute.getString("CITY_NAME");
@@ -102,10 +98,8 @@ public class DbCommunication {
                 
        //Przygotowywanie tablicy miejsc
        
-                SQL = "SELECT * FROM Places WHERE Route_id="
-                        + "'" + routeId + "'";
-                ResultSet rsPlace = stmt.executeQuery( SQL );
-                
+                SQL = "SELECT * FROM Places WHERE Route_id="  + "'" + routeId + "'";
+                ResultSet rsPlace = stmt.executeQuery( SQL );   
                 rsPlace.next();
                 
                 Place miejsca [] = new Place [number_of_places];
@@ -117,17 +111,14 @@ public class DbCommunication {
         rsPlace.next();
     }
         
-        Route generatedRoute = new Route(route_id,city_name,route_length_km,
-                estimated_walk_time_in_mins,number_of_places,miejsca);
+        Route generatedRoute = new Route(route_id,city_name,
+                route_length_km,estimated_walk_time_in_mins,
+                number_of_places,miejsca);
         
+        con.close();
         return generatedRoute;
-                
-                
-        }catch (SQLException err)
-        {
-            return null;
-        }
-        
+                              
+        }catch (SQLException err){return null;}   
     }
     
     
