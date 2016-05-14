@@ -15,7 +15,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.PathParam;
 import ds.route.Route;
-import java.math.BigDecimal;
 import javax.json.*;
 
 /**
@@ -48,13 +47,23 @@ public class ApiCommunication {
         DbCommunication.addRouteToDb(routeToAdd);
     }
     
-    @Path("search_route/{routeId}")
+    @Path("search_route_by_id/{routeId}")
     @GET
     @Produces("text/plain")
-    public String searchForRoute (@PathParam("routeId") String routeId)
+    public String SearchRouteById (@PathParam("routeId") String routeId)
     {
         Route routeFromDb = DbCommunication.getRouteFromDb(routeId);
         return javaObjToJson(routeFromDb).toString();
+    }
+    
+    @Path("search_route_by_city/{cityName}")
+    @GET
+    @Produces("text/plain")
+    public String SearchRouteByCityName (@PathParam("cityName") String cityName)
+    {
+        Route wektorTras [] = DbCommunication.getRouteFromDbByCityName(cityName);
+        //return javaObjToJson(wektorTras).toString();routeId
+        return "ok";
     }
     
     static public Route jsonToJavaObj (JsonObject data)

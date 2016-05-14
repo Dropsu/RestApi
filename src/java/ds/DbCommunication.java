@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package ds;
 
 import java.sql.Connection;
@@ -119,8 +115,86 @@ public class DbCommunication {
         return generatedRoute;
                               
         }catch (SQLException err){return null;}   
+           
     }
     
     
+    public static Route [] getRouteFromDbByCityName (String CityName)
+    {
+          Connection con = DbCommunication.establishConnection();
+          
+        try {
+         Statement stmt = con.createStatement( ); 
+         String SQL = "SELECT COUNT (*) FROM Routes WHERE City_name=" + "'" + CityName + "'";      
+         ResultSet rsCount = stmt.executeQuery( SQL );
+         rsCount.next();
+         int rozmiar = rsCount.getInt("COUNT(*)");
+         
+         SQL = "SELECT * FROM Routes WHERE City_name=" + "'" + CityName + "'";
+         ResultSet rsRoute = stmt.executeQuery( SQL );
+               
+        
+        Route [] wektorTras = new Route [rozmiar];
+        
+       String route_id = null;
+       String city_name = null;
+       String route_length_km = null;
+       int estimated_walk_time_in_mins = 0;
+       int number_of_places = 0;
+       
+       int [] numberOfPlacesInRoutes = new int [rozmiar];
+       String [] routesIds = new String [rozmiar];
+       
+       Place miejsca [] = null;
+        
+        
     
+        for (int j =0;j<rozmiar;j++)
+        {
+        rsRoute.next();
+    
+        route_id = rsRoute.getString("ROUTE_ID");
+        city_name = rsRoute.getString("CITY_NAME");
+        route_length_km = rsRoute.getString("ROUTE_LENGTH_KM");
+        estimated_walk_time_in_mins = rsRoute.getInt("ESTIMATED_WALK_TIME_IN_MINS");
+        number_of_places = rsRoute.getInt("NUMBER_OF_PLACES");
+        
+        numberOfPlacesInRoutes[j]=number_of_places;
+        routesIds[j]=route_id;
+              
+        Route generatedRoute = new Route(route_id,city_name,
+                route_length_km,estimated_walk_time_in_mins,
+                number_of_places,miejsca);
+        wektorTras[j] = generatedRoute;
+        }
+        
+        //Przygotowywanie tablic miejsc 
+        
+        for(int j = 0;j<rozmiar;j++)
+        {
+        
+       
+                SQL = "SELECT * FROM Places WHERE Route_id="  + "'" + routesIds[j] + "'";
+                ResultSet rsPlace = stmt.executeQuery( SQL );   
+                rsPlace.next();
+                
+                miejsca = new Place [numberOfPlacesInRoutes[j]];
+               
+        for (int i=0; i<numberOfPlacesInRoutes[j];i++)
+    {
+        Place nowe = new Place(rsPlace.getString("PLACE_NAME"),rsPlace.getInt("INDEX_NUMBER_IN_ROUTE"),rsPlace.getString("ROUTE_ID"));
+        miejsca[i]=nowe;
+        rsPlace.next();
+    }
+        wektorTras[j].miejsca = miejsca;
+        }
+        
+        
+        con.close();
+        return wektorTras;
+                              
+        }catch (SQLException err){return null;}
+    
+    
+    }
 }
