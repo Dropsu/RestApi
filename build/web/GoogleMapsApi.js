@@ -106,7 +106,7 @@ function setMiejscaPosr ()
          route_id:city_name + "123",
          route_length_km:"5.5",
          estimated_walk_time_in_mins:120,
-         number_of_places:2,
+         number_of_places:i+1,
          places:miejsca};
          $.ajax({
     type: 'POST',
@@ -137,12 +137,27 @@ function setMiejscaPosr ()
            
            $.ajax({ 
     type: 'GET', 
-    url: 'http://localhost:8080/Turrest/api/search_route/Poznan123', 
+    url: 'http://localhost:8080/Turrest/api/search_route_by_id/Poznan123', 
     data: { get_param: 'value' }, 
     dataType: 'json',
     success: function (data) { 
         //prototyp wyswietlania działa!
         wyswietlOtrzymanaTrase(data);
+        
+    }
+});
+       });
+       
+       var testButton2 = document.getElementById("receiving-array-test");
+       testButton2.addEventListener('click',function (){
+           
+           $.ajax({ 
+    type: 'GET', 
+    url: 'http://localhost:8080/Turrest/api/search_route_by_city/Oleśnica, Polska', 
+    data: { get_param: 'value' }, 
+    dataType: 'json',
+    success: function (data) { 
+        wyswietlOtrzymanaTrase(data[0]);
         
     }
 });

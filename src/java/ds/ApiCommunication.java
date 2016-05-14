@@ -41,10 +41,11 @@ public class ApiCommunication {
     @POST
     @Produces("text/plain")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void receiveRoute (JsonObject data)
+    public String receiveRoute (JsonObject data)
     {
         Route routeToAdd = jsonToJavaObj(data);
         DbCommunication.addRouteToDb(routeToAdd);
+        return "Dodano Trase";
     }
     
     @Path("search_route_by_id/{routeId}")
@@ -62,8 +63,7 @@ public class ApiCommunication {
     public String SearchRouteByCityName (@PathParam("cityName") String cityName)
     {
         Route wektorTras [] = DbCommunication.getRouteFromDbByCityName(cityName);
-        //return javaObjToJson(wektorTras).toString();routeId
-        return "ok";
+        return routesArrayToJsonArray(wektorTras).toString();
     }
     
     static public Route jsonToJavaObj (JsonObject data)
@@ -91,7 +91,7 @@ public class ApiCommunication {
         JsonArray miejsca = arrayBuilder.build();
         
         
-      JsonObject jsonToSend = Json.createObjectBuilder()
+      JsonObject createdJson = Json.createObjectBuilder()
               .add("city_name", routeToConvert.city_name)
               .add("route_id",routeToConvert.route_id)
               .add("route_length_km",routeToConvert.route_length_km)
@@ -99,7 +99,17 @@ public class ApiCommunication {
               .add("number_of_places", routeToConvert.number_of_places)
               .add("miejsca",miejsca)
               .build();
-     return jsonToSend;
+     return createdJson;
     } 
+   
+    static public JsonArray routesArrayToJsonArray (Route [] wekTras)
+    {
+    JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+          for (Route trasa : wekTras) {
+              arrayBuilder.add(javaObjToJson(trasa));
+          }
+          JsonArray JArray = arrayBuilder.build();
+    return JArray;
+    }
     
 }

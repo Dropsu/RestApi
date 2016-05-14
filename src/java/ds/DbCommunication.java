@@ -124,31 +124,34 @@ public class DbCommunication {
           Connection con = DbCommunication.establishConnection();
           
         try {
+         // zliczanie ilosci tras
          Statement stmt = con.createStatement( ); 
          String SQL = "SELECT COUNT (*) FROM Routes WHERE City_name=" + "'" + CityName + "'";      
          ResultSet rsCount = stmt.executeQuery( SQL );
          rsCount.next();
          int rozmiar = rsCount.getInt("COUNT(*)");
-         
+         //pobiernie tras
          SQL = "SELECT * FROM Routes WHERE City_name=" + "'" + CityName + "'";
          ResultSet rsRoute = stmt.executeQuery( SQL );
                
         
-        Route [] wektorTras = new Route [rozmiar];
+       Route [] wektorTras = new Route [rozmiar];
         
+       //wymagane z powodow implementacyjnych deklaracje
        String route_id = null;
        String city_name = null;
        String route_length_km = null;
        int estimated_walk_time_in_mins = 0;
        int number_of_places = 0;
+       Place miejsca [] = null;
        
-       int [] numberOfPlacesInRoutes = new int [rozmiar];
+       //wektory zapewniajace komunikacje miedzy petlami obslugi tras i miejsc
+       int [] numberOfPlacesInRoutes = new int [rozmiar]; 
        String [] routesIds = new String [rozmiar];
        
-       Place miejsca [] = null;
         
         
-    
+    // wpisywanie kolejnych tras do wektora tras (wszystkie pola uzupelniane oprocz pola "miejsca")
         for (int j =0;j<rozmiar;j++)
         {
         rsRoute.next();
@@ -168,12 +171,9 @@ public class DbCommunication {
         wektorTras[j] = generatedRoute;
         }
         
-        //Przygotowywanie tablic miejsc 
-        
+        //Uzupelniane dla kazdej trasy z wektora pola "miejsca"
         for(int j = 0;j<rozmiar;j++)
         {
-        
-       
                 SQL = "SELECT * FROM Places WHERE Route_id="  + "'" + routesIds[j] + "'";
                 ResultSet rsPlace = stmt.executeQuery( SQL );   
                 rsPlace.next();
