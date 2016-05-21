@@ -24,7 +24,7 @@ import javax.json.*;
 @Path("") // path do wejscia do klasy
 public class ApiCommunication {
     
-      @GET // kazdy path moze miec tylko po jednej motodzie GET, POST itd.
+    @GET // kazdy path moze miec tylko po jednej motodzie GET, POST itd.
     @Produces(MediaType.TEXT_HTML)
     public String getDocumentation() {  //weryfikacja
         return "<h1>Api Documentation </h1>"
@@ -69,29 +69,29 @@ public class ApiCommunication {
     static public Route jsonToJavaObj (JsonObject data)
     {
         
-    String route_id = data.getString("route_id");
-    String city_name = data.getString("city_name");
-    String route_length_km = data.getString("route_length_km");
-    int estimated_walk_time_in_mins = data.getInt("estimated_walk_time_in_mins");
-    int number_of_places = data.getInt("number_of_places");
-    JsonArray jsonMiejsca = data.getJsonArray("places");
-    
-    Route trasa = new Route(route_id,city_name,route_length_km,estimated_walk_time_in_mins,number_of_places,jsonMiejsca);
-    return trasa;
+        String route_id = data.getString("route_id");
+        String city_name = data.getString("city_name");
+        String route_length_km = data.getString("route_length_km");
+        int estimated_walk_time_in_mins = data.getInt("estimated_walk_time_in_mins");
+        int number_of_places = data.getInt("number_of_places");
+        JsonArray jsonMiejsca = data.getJsonArray("places");
+
+        Route trasa = new Route(route_id,city_name,route_length_km,estimated_walk_time_in_mins,number_of_places,jsonMiejsca);
+        return trasa;
     }
     
     static public JsonObject javaObjToJson (Route routeToConvert)
     {
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         
-        for(int i =0;i<routeToConvert.number_of_places;i++) {
-        arrayBuilder.add(routeToConvert.miejsca[i].place_name);
-        }
+        for(int i =0;i<routeToConvert.number_of_places;i++) 
+            arrayBuilder.add(routeToConvert.miejsca[i].place_name);
+        
         
         JsonArray miejsca = arrayBuilder.build();
         
         
-      JsonObject createdJson = Json.createObjectBuilder()
+        JsonObject createdJson = Json.createObjectBuilder()
               .add("city_name", routeToConvert.city_name)
               .add("route_id",routeToConvert.route_id)
               .add("route_length_km",routeToConvert.route_length_km)
@@ -105,11 +105,11 @@ public class ApiCommunication {
     static public JsonArray routesArrayToJsonArray (Route [] wekTras)
     {
     JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-          for (Route trasa : wekTras) {
-              arrayBuilder.add(javaObjToJson(trasa));
-          }
-          JsonArray JArray = arrayBuilder.build();
-    return JArray;
+        for (Route trasa : wekTras)
+            arrayBuilder.add(javaObjToJson(trasa));
+          
+        JsonArray JArray = arrayBuilder.build();
+        return JArray;
     }
     
 }
