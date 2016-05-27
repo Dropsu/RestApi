@@ -17,15 +17,19 @@
         var directionsDisplay = new google.maps.DirectionsRenderer;
         directionsDisplay.setMap(map);
         
-        map.data.loadGeoJson('https://storage.googleapis.com/maps-devrel/google.json');
 
         var origin_input = document.getElementById('origin-input');
         var city_input = document.getElementById('city-input');
         var modes = document.getElementById('mode-selector');
+        var save_button = document.getElementById('saveButton');
+        var route_name = document.getElementById('route-name');
+        
 
-        map.controls[google.maps.ControlPosition.TOP_LEFT].push(origin_input);
-        map.controls[google.maps.ControlPosition.TOP_LEFT].push(modes);
-
+//        map.controls[google.maps.ControlPosition.TOP_LEFT].push(origin_input);
+//        map.controls[google.maps.ControlPosition.TOP_LEFT].push(modes);
+//        map.controls[google.maps.ControlPosition.TOP_LEFT].push(route_name);
+//        map.controls[google.maps.ControlPosition.TOP_LEFT].push(save_button);
+        
         var origin_autocomplete = new google.maps.places.Autocomplete(origin_input);
         origin_autocomplete.bindTo('bounds', map);
 
@@ -94,11 +98,35 @@
         }
         
         // *** WYSYLANIE TRAS ***
+        
+        var add_route_button = document.getElementById('add-route');
+        add_route_button.addEventListener('click',function () {
+             var place = city_autocomplete.getPlace();
+            if (!place) {
+                window.alert("Wybierz jedno z sugerowanych miast w polu tekstowym");
+                return;
+            }
+            document.getElementById("map").style.visibility = "visible";
+            $(".controls").css("visibility", "visible");
+        });
+        
        
         var saveButton = document.getElementById("saveButton");
         saveButton.addEventListener('click',function () {
+            if(miejsca.length<2)
+            {
+                window.alert("Trasa musi zawierać przynajmniej 2 punkty");
+                return;
+            }
+             if(route_name.value==="")
+            {
+                window.alert("Pole nazwa nie może być puste");
+                return;
+            }
+            
+            
             var route = { city_name:city_name,
-                route_id:city_name + "123",
+                route_id:route_name.value,
                 route_length_km:"5.5",
                 estimated_walk_time_in_mins:120,
                 number_of_places:i+1,
