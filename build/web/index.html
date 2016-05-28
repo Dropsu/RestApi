@@ -78,6 +78,21 @@
       
       <button id="add-route">***Dodaj Trase***</button>
       
+      <div>
+          
+         <button id="search" style="margin-top:15px;">***Wyszukaj Trasy***</button> 
+         <table id="routes-table">
+             <tr>
+                <th>Nazwa trasy</th>
+                <th>Ilość punktów</th>
+                <th>Długość trasy[km]</th>
+                <th>Czas pokonywania [min]</th>
+            </tr>
+         </table>
+         
+         
+      </div>
+      
      <div id="mode-selector" class="controls">
       <input type="radio" name="type" id="changemode-walking" checked="checked">
       <label for="changemode-walking">Pieszo</label>
@@ -97,7 +112,7 @@
     <script type="text/javascript">
         function hide () {
             $(".controls").css("visibility", "hidden");
-            $("#city-input").css("visibility", "visible"); 
+            $("#city-input").css("visibility", "visible");
     }
         hide();
     </script>

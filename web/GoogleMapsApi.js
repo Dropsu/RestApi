@@ -158,7 +158,6 @@
         var testButton = document.getElementById("receiving-test");
         
         testButton.addEventListener('click',function (){
-           
             $.ajax({ 
                 type: 'GET', 
                 url: 'http://localhost:8080/Turrest/api/search_route_by_id/Poznan123', 
@@ -172,7 +171,6 @@
        
        var testButton2 = document.getElementById("receiving-array-test");
        testButton2.addEventListener('click',function (){
-           
            $.ajax({ 
                 type: 'GET', 
                 url: 'http://localhost:8080/Turrest/api/search_route_by_city/Oleśnica, Polska', 
@@ -183,5 +181,49 @@
                 }
             });
         });
-       
+        
+       var searchButton = document.getElementById("search");
+       searchButton.addEventListener('click',function (){
+           $.ajax({ 
+                type: 'GET', 
+                url: 'http://localhost:8080/Turrest/api/search_route_by_city/'+city_name, 
+                data: { get_param: 'value' }, 
+                dataType: 'json',
+                success: function (data) { 
+                    var routesTable = document.getElementById("routes-table");
+                    var row;
+                    var cell1;
+                    var cell2;
+                    var cell3;
+                    var cell4;
+                    var cell5;
+                    
+                    
+                    for(var i=0;i<data.length;i++)
+                    {
+                        row = routesTable.insertRow(i+1);
+                        cell1 = row.insertCell(0);
+                        cell2 = row.insertCell(1);
+                        cell3 = row.insertCell(2);
+                        cell4 = row.insertCell(3);
+                        cell5 = row.insertCell(4);
+                        cell1.innerHTML = data[i].route_id;
+                        cell2.innerHTML = data[i].number_of_places;
+                        cell3.innerHTML = data[i].route_length_km;
+                        cell4.innerHTML = data[i].estimated_walk_time_in_mins;
+                        
+                        var button = document.createElement("BUTTON");        
+                        var t = document.createTextNode("Wyświetl Trasę"); 
+                        button.onclick = function(){wyswietlOtrzymanaTrase(data[this.id]);};
+                        button.setAttribute("id", i);
+                        button.appendChild(t);                                                
+                        cell4.appendChild(button);
+
+
+                    }
+                    
+                    //wyswietlOtrzymanaTrase(data[0]);
+                }
+            });
+        });   
     }
