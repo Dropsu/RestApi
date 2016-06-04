@@ -20,15 +20,8 @@
 
         var origin_input = document.getElementById('origin-input');
         var city_input = document.getElementById('city-input');
-        var modes = document.getElementById('mode-selector');
         var save_button = document.getElementById('saveButton');
         var route_name = document.getElementById('route-name');
-        
-
-//        map.controls[google.maps.ControlPosition.TOP_LEFT].push(origin_input);
-//        map.controls[google.maps.ControlPosition.TOP_LEFT].push(modes);
-//        map.controls[google.maps.ControlPosition.TOP_LEFT].push(route_name);
-//        map.controls[google.maps.ControlPosition.TOP_LEFT].push(save_button);
         
         var origin_autocomplete = new google.maps.places.Autocomplete(origin_input);
         origin_autocomplete.bindTo('bounds', map);
@@ -39,15 +32,6 @@
         var regions = ["(regions)"];
         city_autocomplete.setTypes(regions); //googlemaps dopusci tylko miasta do wyboru w tym inpucie
 
-        
-        function setupClickListener(id, mode) {
-            var radioButton = document.getElementById(id);
-            radioButton.addEventListener('click', function() {
-                travel_mode = mode;
-            });
-        }
-        setupClickListener('changemode-walking', google.maps.TravelMode.WALKING);
-        setupClickListener('changemode-driving', google.maps.TravelMode.DRIVING);
 
         function setMiejscaPosr ()
         {
@@ -134,11 +118,11 @@
             
             var route = { city_name:city_name,
                 route_id:route_name.value,
-                route_length_km: String(distance/1000),
-                estimated_walk_time_in_mins:(distance*0,015)+(miejsca.length*15),
+                route_length_km: String((distance/1000).toFixed(2)),
+                estimated_walk_time_in_mins:(distance*0.015)+(miejsca.length*10),
                 number_of_places:i+1,
                 places:miejsca };
-            $.ajax({
+            $.ajax({//1638
                 type: 'POST',
                 url: 'http://localhost:8080/Turrest/api/send_route',
                 data:  JSON.stringify(route),
@@ -216,15 +200,16 @@
                         cell5 = row.insertCell(4);
                         cell1.innerHTML = data[i].route_id;
                         cell2.innerHTML = data[i].number_of_places;
-                        cell3.innerHTML = data[i].route_length_km;
-                        cell4.innerHTML = (data[i].estimated_walk_time_in_mins/60).toFixed(2);
+                        cell3.innerHTML = data[i].route_length_km+" km";
+                        cell4.innerHTML = Math.floor((data[i].estimated_walk_time_in_mins/60).toFixed(2))+" godzin "+
+                                data[i].estimated_walk_time_in_mins%60+" minut";
                         
                         var button = document.createElement("BUTTON");        
                         var t = document.createTextNode("Wyświetl Trasę"); 
                         button.onclick = function(){wyswietlOtrzymanaTrase(data[this.id]);};
                         button.setAttribute("id", i);
                         button.appendChild(t);                                                
-                        cell4.appendChild(button);
+                        cell5.appendChild(button);
 
 
                     }
