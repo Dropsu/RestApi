@@ -78,6 +78,7 @@
             map.setZoom(15);
         });
 
+        var distance = 0;
         function route(origin_place_id, destination_place_id, travel_mode,
             directionsService, directionsDisplay, miejsca_posr) {
             if (!origin_place_id) //pozwala sie zaladowac stronie 
@@ -91,7 +92,13 @@
                 optimizeWaypoints: false
             }, function(response, status) {
                     if (status === google.maps.DirectionsStatus.OK)
-                        directionsDisplay.setDirections(response);
+                    {
+                       var j =0;
+                        if(i>1)  {j= i-1;}
+                       directionsDisplay.setDirections(response);
+                       distance += response.routes[0]['legs'][j]['distance']['value'];
+                    }
+                        
                     else 
                         window.alert('Directions request failed due to ' + status);             
                 });
@@ -127,8 +134,8 @@
             
             var route = { city_name:city_name,
                 route_id:route_name.value,
-                route_length_km:"5.5",
-                estimated_walk_time_in_mins:120,
+                route_length_km: String(distance/1000),
+                estimated_walk_time_in_mins:(distance*0,015)+(miejsca.length*15),
                 number_of_places:i+1,
                 places:miejsca };
             $.ajax({
@@ -210,7 +217,7 @@
                         cell1.innerHTML = data[i].route_id;
                         cell2.innerHTML = data[i].number_of_places;
                         cell3.innerHTML = data[i].route_length_km;
-                        cell4.innerHTML = data[i].estimated_walk_time_in_mins;
+                        cell4.innerHTML = (data[i].estimated_walk_time_in_mins/60).toFixed(2);
                         
                         var button = document.createElement("BUTTON");        
                         var t = document.createTextNode("Wyświetl Trasę"); 
