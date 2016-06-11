@@ -20,7 +20,6 @@
 
         var origin_input = document.getElementById('origin-input');
         var city_input = document.getElementById('city-input');
-        var save_button = document.getElementById('saveButton');
         var route_name = document.getElementById('route-name');
         
         var origin_autocomplete = new google.maps.places.Autocomplete(origin_input);
@@ -31,6 +30,9 @@
         city_autocomplete.bindTo('bounds', map);
         var regions = ["(regions)"];
         city_autocomplete.setTypes(regions); //googlemaps dopusci tylko miasta do wyboru w tym inpucie
+        
+        var routeAddBClicked = false;
+        var routeSearchBClicked = false;
 
 
         function setMiejscaPosr ()
@@ -43,10 +45,20 @@
                });
             }
         }
+        
+        function addToPointsList (miejsce)
+        {
+            var listItem = document.createElement("li");
+            var node = document.createTextNode(miejsce);
+            listItem.appendChild(node);
+            var element = document.getElementById("points-list");
+            element.appendChild(listItem);
+        }
 
         origin_autocomplete.addListener('place_changed', function() {
             document.getElementById('origin-input').value = "";
             miejsca.push(origin_autocomplete.getPlace().formatted_address);
+            addToPointsList(origin_autocomplete.getPlace().formatted_address);
             i++;
             setMiejscaPosr();
             route(miejsca[0], miejsca[i], travel_mode,
@@ -81,6 +93,7 @@
                         if(i>1)  {j= i-1;}
                        directionsDisplay.setDirections(response);
                        distance += response.routes[0]['legs'][j]['distance']['value'];
+                       document.getElementById("distance").innerHTML = "Długość: "+(distance/1000).toFixed(2)+" km";
                     }
                         
                     else 
@@ -88,94 +101,30 @@
                 });
         }
         
-        // *** WYSYLANIE TRAS ***
         
-        var add_route_button = document.getElementById('add-route');
-        add_route_button.addEventListener('click',function () {
-             var place = city_autocomplete.getPlace();
+        var submit_button = document.getElementById('submit');
+        submit_button.addEventListener('click',function () {
+            
+            if(routeAddBClicked==true)
+            {
+                var place = city_autocomplete.getPlace();
             if (!place) {
                 window.alert("Wybierz jedno z sugerowanych miast w polu tekstowym");
                 return;
             }
             document.getElementById("map").style.visibility = "visible";
             $(".controls").css("visibility", "visible");
-        });
-        
-       
-        var saveButton = document.getElementById("saveButton");
-        saveButton.addEventListener('click',function () {
-            if(miejsca.length<2)
-            {
-                window.alert("Trasa musi zawierać przynajmniej 2 punkty");
-                return;
-            }
-             if(route_name.value==="")
-            {
-                window.alert("Pole nazwa nie może być puste");
-                return;
+            
             }
             
-            
-            var route = { city_name:city_name,
-                route_id:route_name.value,
-                route_length_km: String((distance/1000).toFixed(2)),
-                estimated_walk_time_in_mins:(distance*0.015)+(miejsca.length*10),
-                number_of_places:i+1,
-                places:miejsca };
-            $.ajax({//1638
-                type: 'POST',
-                url: 'http://localhost:8080/Turrest/api/send_route',
-                data:  JSON.stringify(route),
-                success: function(data) {
-                    alert('wynik: ' + data); 
-                }, 
-                contentType: "application/json", // typ wysylanych danych
-                dataType: 'text' // typ odpowiedzi jakiej oczekuje
-            });
-        });
-        // *** ODBIERANIE TRAS ***
-        
-        
-        function wyswietlOtrzymanaTrase (json) {
-            for(var j=0;j<json.miejsca.length;j++) {
-                miejsca[j]=json.miejsca[j];
-                i++;
+            if(routeSearchBClicked===true)
+            {
+                var place = city_autocomplete.getPlace();
+            if (!place) {
+                window.alert("Wybierz jedno z sugerowanych miast w polu tekstowym");
+                return;
             }
-            setMiejscaPosr();
-            route(miejsca[0], miejsca[i], travel_mode,
-                directionsService, directionsDisplay, miejsca_posr);
-        }
-        
-        var testButton = document.getElementById("receiving-test");
-        
-        testButton.addEventListener('click',function (){
-            $.ajax({ 
-                type: 'GET', 
-                url: 'http://localhost:8080/Turrest/api/search_route_by_id/Poznan123', 
-                data: { get_param: 'value' }, 
-                dataType: 'json',
-                success: function (data) { 
-                    wyswietlOtrzymanaTrase(data);
-                }
-            });
-        });
-       
-       var testButton2 = document.getElementById("receiving-array-test");
-       testButton2.addEventListener('click',function (){
-           $.ajax({ 
-                type: 'GET', 
-                url: 'http://localhost:8080/Turrest/api/search_route_by_city/Oleśnica, Polska', 
-                data: { get_param: 'value' }, 
-                dataType: 'json',
-                success: function (data) { 
-                    wyswietlOtrzymanaTrase(data[0]);
-                }
-            });
-        });
-        
-       var searchButton = document.getElementById("search");
-       searchButton.addEventListener('click',function (){
-           $.ajax({ 
+                 $.ajax({ 
                 type: 'GET', 
                 url: 'http://localhost:8080/Turrest/api/search_route_by_city/'+city_name, 
                 data: { get_param: 'value' }, 
@@ -206,16 +155,81 @@
                         
                         var button = document.createElement("BUTTON");        
                         var t = document.createTextNode("Wyświetl Trasę"); 
-                        button.onclick = function(){wyswietlOtrzymanaTrase(data[this.id]);};
+                        button.onclick = function(){
+                            wyswietlOtrzymanaTrase(data[this.id]);
+                            document.getElementById("map").style.visibility = "visible";
+                            $("#routes-table").css("display", "none");
+                        };
                         button.setAttribute("id", i);
                         button.appendChild(t);                                                
                         cell5.appendChild(button);
-
-
                     }
-                    
-                    //wyswietlOtrzymanaTrase(data[0]);
+                    $("#routes-table").css("display", "block");
                 }
             });
+            }
+            
+        });
+        
+        // *** WYSYLANIE TRAS ***
+        
+        var add_route_button = document.getElementById('add-route');
+        add_route_button.addEventListener('click',function () {
+           routeAddBClicked=true;  
+           routeSearchBClicked=false;
+           $("#city-input_div").css("display", "block");
+        });
+        
+       
+        var saveButton = document.getElementById("saveButton");
+        saveButton.addEventListener('click',function () {
+            if(miejsca.length<2)
+            {
+                window.alert("Trasa musi zawierać przynajmniej 2 punkty");
+                return;
+            }
+             if(route_name.value==="")
+            {
+                window.alert("Pole nazwa nie może być puste");
+                return;
+            }
+            
+            
+            var route = { city_name:city_name,
+                route_id:route_name.value,
+                route_length_km: String((distance/1000).toFixed(2)),
+                estimated_walk_time_in_mins:(distance*0.015)+(miejsca.length*10),
+                number_of_places:i+1,
+                places:miejsca };
+            $.ajax({
+                type: 'POST',
+                url: 'http://localhost:8080/Turrest/api/send_route',
+                data:  JSON.stringify(route),
+                success: function(data) {
+                    alert('wynik: ' + data); 
+                }, 
+                contentType: "application/json", // typ wysylanych danych
+                dataType: 'text' // typ odpowiedzi jakiej oczekuje
+            });
+        });
+        // *** ODBIERANIE TRAS ***
+        
+        
+        function wyswietlOtrzymanaTrase (json) {
+            for(var j=0;j<json.miejsca.length;j++) {
+                miejsca[j]=json.miejsca[j];
+                addToPointsList(miejsca[j]);
+                i++;
+            }
+            setMiejscaPosr();
+            route(miejsca[0], miejsca[i], travel_mode,
+                directionsService, directionsDisplay, miejsca_posr);
+        }
+        
+       var searchButton = document.getElementById("search");
+       searchButton.addEventListener('click',function (){
+          routeSearchBClicked=true;
+          routeAddBClicked=false;
+          $("#city-input_div").css("display", "block");
         });   
     }

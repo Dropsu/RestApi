@@ -29,10 +29,16 @@ public class ApiCommunication {
     public String getDocumentation() {  //weryfikacja
         return "<h1>Api Documentation </h1>"
                 + "<p>Avaliable methods:</p>"
-                + "<h3>1) Search for route by its name</h3>"
+                + "<h3>1) Search for route by Route_name name</h3>"
                 + ".../api/search_route/{routeId}<br>"
                 + "Input: 'routeId' -> Name of route to search for<br>"
-                + "Result: route as JSON ";
+                + "Result: route as JSON"
+                + "<h3>2) Search for routes by City_name</h3> "
+                + ".../api/search_route_by_city/{city_name, country_name}<br>"
+                + "Input: ex1: Rzeszow, Polska ex2: Warszawa, Polska ex3: Warszawa, Komorow, Polska ."
+                + "Check google maps autocomplition for city_name if needed<br>"
+                + "Result: Routes in given city as JSON";
+              
                 
     }
     

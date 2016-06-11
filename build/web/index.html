@@ -67,9 +67,10 @@
         display: block;
         font-family: sans-serif;
         -webkit-font-smoothing: antialiased;
-        font-size: 115%;
+        font-size: 80%;
         overflow: auto;
         width: auto;
+        display:none;
       }
       
       th {
@@ -88,22 +89,18 @@
 
     </style>
   </head>
-  <body onload="hide()">
-      <article id="article3" style="">
-        <div style="margin: 2px 0px 2px 0px;">
-            <button id="receiving-test">Testuj pobieranie pojedynczej trasy</button>
-            <button id="receiving-array-test">Testuj pobieranie wektora tras</button>
-        </div>
-    </article>
-      
-      <input id="city-input" class="controls" type="text"
-             placeholder="Wprowadz miasto" style="visibility:visible">
-      
+  <body onload="hide()">  
+      <div style="width: 400px;margin: 0 auto 0 auto;">
       <button id="add-route">***Dodaj Trase***</button>
+      <button id="search" style="margin-top:15px;">***Wyszukaj Trasy***</button> 
       
+        <div id="city-input_div" style="display:none">
+        <input id="city-input" class="controls" type="text"
+               placeholder="Wprowadz miasto">
+        <button id="submit">Potwierdz</button>
+        </div>
+      </div>
       <div>
-          
-         <button id="search" style="margin-top:15px;">***Wyszukaj Trasy***</button> 
          <table id="routes-table">
              <tr>
                 <th>Nazwa</th>
@@ -112,28 +109,30 @@
                 <th>Czas zwiedzania</th>
             </tr>
          </table>
-         
-         
-      </div>
+       </div>
       
-      <input id="route-name" class="controls" type="text"
-        placeholder="Nazwa Trasy">
-      <input id="origin-input" class="controls" type="text"
-        placeholder="Dodaj punkt do trasy...">
-      <button id="saveButton" class="controls" style="margin-right:30px;">Zakończ edycję i zapisz trasę</button>
+        <div id="map" style="width:75%;margin-left: 20px;margin-bottom: 20px;display:inline-block"></div>
       
-
-    <div id="map"></div>
-    <script src="GoogleMapsApi.js"></script>
-    <script type="text/javascript">
-        function hide () {
-            $(".controls").css("visibility", "hidden");
-            $("#city-input").css("visibility", "visible");
-    }
-        hide();
-    </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnNztGB9iSzAEWG-BMDqKBPCKcifEM9xM&libraries=places&callback=initMap"
-        async defer></script>      
+        <div style="display:inline-block; width:15%;margin-right: 0;position: absolute; top: 110px">
+        <input id="route-name" class="controls" type="text"
+          placeholder="Nazwa Trasy">
+        <input id="origin-input" class="controls" type="text"
+          placeholder="Dodaj punkt do trasy...">
+        <ol type="A" id="points-list"></ol>
+        <p style="margin-left:15px" id="distance"></p>
+        <button id="saveButton" class="controls" style="margin-right:30px;">Zakończ edycję i zapisz trasę</button>
+        </div>
+      
+        <script src="GoogleMapsApi.js"></script>
+        <script type="text/javascript">
+            function hide () {
+                $(".controls").css("visibility", "hidden");
+                $("#city-input").css("visibility", "visible");
+        }
+            hide();
+        </script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnNztGB9iSzAEWG-BMDqKBPCKcifEM9xM&libraries=places&callback=initMap"
+            async defer></script>      
   </body>
   
 </html>
