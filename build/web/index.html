@@ -4,6 +4,9 @@
     <title>Turrest</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="bootstrap.min.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <style>
       html, body {
@@ -89,15 +92,21 @@
 
     </style>
   </head>
-  <body onload="hide()">  
-      <div style="width: 400px;margin: 0 auto 0 auto;">
-      <button id="add-route">***Dodaj Trase***</button>
-      <button id="search" style="margin-top:15px;">***Wyszukaj Trasy***</button> 
-      
+  <body onload="hide()" style="background-color: #e4e8e4">  
+      <p style="text-align:center;margin-top: 15px"><img src="logo3.png" alt="Turrest" height="60" width="240"></p>
+        <div style="margin: 15px auto 0 auto;">
+            <p style="text-align:center">
+        <button id="add-route" class="btn btn-success btn-lg" >Dodaj Trase</button>
+        <button id="search" class="btn btn-success btn-lg">Wyszukaj Trasy</button> 
+            </p>   
         <div id="city-input_div" style="display:none">
+        <p style="text-align:center">
+            <img id="add_img" src="add.png" width="20" height="20" alt="add" style="display: none">
+            <img id="search_img" src="magnifying-glass.png" width="20" height="20" alt="search" style="display:none"> 
         <input id="city-input" class="controls" type="text"
-               placeholder="Wprowadz miasto">
-        <button id="submit">Potwierdz</button>
+               placeholder="Wprowadz miasto" style="border-radius: 5px">
+        <button id="submit" class="btn btn-success">Potwierdz</button>
+        </p>
         </div>
       </div>
       <div>

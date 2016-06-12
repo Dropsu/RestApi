@@ -67,10 +67,12 @@
         });
         
         city_autocomplete.addListener('place_changed', function() {
-            document.getElementById('city-input').style="background-color: #ff6666";
             city_name = city_autocomplete.getPlace().formatted_address;
+            if (!city_autocomplete.getPlace().formatted_address) {
+                window.alert("Wybierz jedno z sugerowanych miast w polu tekstowym");
+                return;
+            }
             map.setCenter(city_autocomplete.getPlace().geometry.location);
-            document.getElementById('city-input').style="background-color: #87c77d";
             map.setZoom(15);
         });
 
@@ -101,11 +103,10 @@
                 });
         }
         
-        
         var submit_button = document.getElementById('submit');
         submit_button.addEventListener('click',function () {
             
-            if(routeAddBClicked==true)
+            if(routeAddBClicked===true)
             {
                 var place = city_autocomplete.getPlace();
             if (!place) {
@@ -114,7 +115,6 @@
             }
             document.getElementById("map").style.visibility = "visible";
             $(".controls").css("visibility", "visible");
-            
             }
             
             if(routeSearchBClicked===true)
@@ -178,6 +178,8 @@
            routeAddBClicked=true;  
            routeSearchBClicked=false;
            $("#city-input_div").css("display", "block");
+           $("#add_img").css("display", "initial");
+           $("#search_img").css("display", "none");
         });
         
        
@@ -231,5 +233,7 @@
           routeSearchBClicked=true;
           routeAddBClicked=false;
           $("#city-input_div").css("display", "block");
+          $("#search_img").css("display", "initial");
+          $("#add_img").css("display", "none");
         });   
     }
