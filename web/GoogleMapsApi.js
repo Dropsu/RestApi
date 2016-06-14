@@ -161,6 +161,7 @@
                             $("#routes-table").css("display", "none");
                         };
                         button.setAttribute("id", i);
+                        button.setAttribute("class", "btn btn-success");
                         button.appendChild(t);                                                
                         cell5.appendChild(button);
                     }

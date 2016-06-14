@@ -23,7 +23,7 @@
         margin-top: 10px;
         margin-left: 12px;
         border: 1px solid transparent;
-        border-radius: 2px 0 0 2px;
+        border-radius: 5px;
         box-sizing: border-box;
         -moz-box-sizing: border-box;
         height: 32px;
@@ -109,8 +109,8 @@
         </p>
         </div>
       </div>
-      <div>
-         <table id="routes-table">
+      <div style="width:700px;margin:auto">
+          <table id="routes-table">
              <tr>
                 <th>Nazwa</th>
                 <th>Punkty na trasie</th>
@@ -122,14 +122,14 @@
       
         <div id="map" style="width:75%;margin-left: 20px;margin-bottom: 20px;display:inline-block"></div>
       
-        <div style="display:inline-block; width:15%;margin-right: 0;position: absolute; top: 110px">
+        <div style="display:inline-block; width:15%;margin-right: 0;position: absolute; top: 200px">
         <input id="route-name" class="controls" type="text"
           placeholder="Nazwa Trasy">
         <input id="origin-input" class="controls" type="text"
           placeholder="Dodaj punkt do trasy...">
         <ol type="A" id="points-list"></ol>
         <p style="margin-left:15px" id="distance"></p>
-        <button id="saveButton" class="controls" style="margin-right:30px;">Zakończ edycję i zapisz trasę</button>
+        <button id="saveButton" class="controls btn btn-success" style="margin-right:30px;">Zakończ edycję i zapisz trasę</button>
         </div>
       
         <script src="GoogleMapsApi.js"></script>
