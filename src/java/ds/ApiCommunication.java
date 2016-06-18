@@ -1,12 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ds;
 
 
 
+import ds.route.Place;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
@@ -18,19 +14,24 @@ import ds.route.Route;
 import javax.json.*;
 
 /**
- *
+ * ApiCommunication class is responsible for responding to HTTP requests. It also translates Routes between JSON format and Java objects. JSON is used
+ * for cummunication via http, while java objects are used within the application. 
  * @author Dropsu
  */
 @Path("") // path do wejscia do klasy
 public class ApiCommunication {
     
     @GET // kazdy path moze miec tylko po jednej motodzie GET, POST itd.
+    /**
+     * Returns shortened, suited to API user documentation.
+     * @return {String} Documentation
+     */
     @Produces(MediaType.TEXT_HTML)
-    public String getDocumentation() {  //weryfikacja
+    public String getDocumentation() { 
         return "<h1>Api Documentation </h1>"
                 + "<p>Avaliable methods:</p>"
                 + "<h3>1) Search for route by Route_name name</h3>"
-                + ".../api/search_route/{routeId}<br>"
+                + ".../api/search_route_by_id/{routeId}<br>"
                 + "Input: 'routeId' -> Name of route to search for<br>"
                 + "Result: route as JSON"
                 + "<h3>2) Search for routes by City_name</h3> "
@@ -42,7 +43,12 @@ public class ApiCommunication {
                 
     }
     
-    
+    /**
+     * Receveives Route(JSON) via http and using {@link ApiCommunication#jsonToJavaObj jsonToJavaObj} and
+     * {@link DbCommunication#addRouteToDb addRouteToDb} adds it to DataBase. 
+     * @param data
+     * @return {String} operationStatus
+     */
     @Path ("/send_route")
     @POST
     @Produces("text/plain")
@@ -54,6 +60,13 @@ public class ApiCommunication {
         return "Dodano Trase";
     }
     
+    /**
+     * Returns requested by route_id Route (JSON). Uses {@link ApiCommunication#javaObjToJson(ds.route.Route) javaObjToJson}
+     * for conversion and {@link DbCommunication#getRouteFromDb(java.lang.String) getRouteFromDb for accesing database}.
+     * This method can be accesed by making a HTTP request to: .../api/search_route_by_id/{{@link Route#route_id route_id}}
+     * @param routeId
+     * @return {JSON String} requestedRoute 
+     */
     @Path("search_route_by_id/{routeId}")
     @GET
     @Produces("text/plain")
@@ -63,6 +76,14 @@ public class ApiCommunication {
         return javaObjToJson(routeFromDb).toString();
     }
     
+    /**
+     * Returns all Routes(JSON array) in requested City.
+     * Uses {@link DbCommunication#getRouteFromDbByCityName(java.lang.String) getRouteFromDbByCityName}
+     * then converts result with {@link ApiCommunication#routesArrayToJsonArray(ds.route.Route[]) routesArrayToJsonArray}
+     * This method can be accesed by making a HTTP request in an ULR: .../api/search_route_by_city/{{@link Route#city_name city_name}}
+     * @param cityName
+     * @return {JSON Array String} routesArray
+     */
     @Path("search_route_by_city/{cityName}")
     @GET
     @Produces("text/plain")
@@ -72,6 +93,11 @@ public class ApiCommunication {
         return routesArrayToJsonArray(wektorTras).toString();
     }
     
+    /**
+     * Converts Route from JSON format to java object. 
+     * @param data
+     * @return {Route} route
+     */
     static public Route jsonToJavaObj (JsonObject data)
     {
         
@@ -86,12 +112,17 @@ public class ApiCommunication {
         return trasa;
     }
     
+    /**
+     * Converts Route java object to JSON format. 
+     * @param routeToConvert
+     * @return {JSON String} routeAsJson
+     */
     static public JsonObject javaObjToJson (Route routeToConvert)
     {
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         
         for(int i =0;i<routeToConvert.number_of_places;i++) 
-            arrayBuilder.add(routeToConvert.miejsca[i].place_name);
+            arrayBuilder.add(routeToConvert.places[i].place_name);
         
         
         JsonArray miejsca = arrayBuilder.build();
@@ -108,6 +139,11 @@ public class ApiCommunication {
      return createdJson;
     } 
    
+    /**
+     * Convert java array of Route objects to JSON array format. 
+     * @param wekTras
+     * @return {JSON Array} routesArray
+     */
     static public JsonArray routesArrayToJsonArray (Route [] wekTras)
     {
     JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();

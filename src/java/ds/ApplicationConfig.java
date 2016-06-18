@@ -9,7 +9,7 @@ import java.util.Set;
 import javax.ws.rs.core.Application;
 
 /**
- *
+ * Holds basis settings of application.
  * @author Dropsu
  */
 @javax.ws.rs.ApplicationPath("api")

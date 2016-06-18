@@ -9,14 +9,20 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 /**
- *
- * @author Dropsu
+ * DbCommunication class is responsible for all operations on database. It responds to request from {@link ApiCommunication}.
  */
 
 public class DbCommunication {
     
-    public static String status_polaczenia;
+    /**
+     * Holds the status of the database connection or eventual errors.
+     */
+    public static String connectionStatus;
     
+    /**
+     * Establishes connection with database and returns it for other methods.
+     * @return {Connection} variable holding connection
+     */
     public static Connection establishConnection()
     {     
         Connection con = null;
@@ -26,19 +32,19 @@ public class DbCommunication {
         try {
             con = DriverManager.getConnection( "jdbc:oracle:thin:@localhost:1521:XE", "dropsu", "damiuq55" );
         } catch (SQLException err) {
-              status_polaczenia = err.getMessage();
+              connectionStatus = err.getMessage();
             }
         return con;
     }
     
-    public String test_polaczenia ()
-    {
-        status_polaczenia = "Connection Established";
-        establishConnection();
-        return status_polaczenia;
-    }
-    
-    
+    /**
+     * Adds Route to database. Uses SQL statements.
+     * Places Route object to ROUTES table, and its places array to PLACES table.
+     * For database organization see {@link Place}
+     * Method called by {@link ApiCommunication#receiveRoute(javax.json.JsonObject) receiveRoute}
+     * @param routeToAdd
+     * @return
+     */
     public static String addRouteToDb (Route routeToAdd)
     {
         Connection con = DbCommunication.establishConnection();
@@ -51,16 +57,16 @@ public class DbCommunication {
                      + routeToAdd.route_length_km+","
                      + routeToAdd.estimated_walk_time_in_mins+","
                      + routeToAdd.number_of_places
-                     + ")"; // zmienna SQL przechowuje SQL...
+                     + ")"; 
 
              stmt.executeQuery( SQL ); 
 
              for(int i=0;i<routeToAdd.number_of_places;i++)
              {
                 SQL = "INSERT INTO Places VALUES ("
-                     + "'"+routeToAdd.miejsca[i].place_name+"',"
-                        + routeToAdd.miejsca[i].index_number_in_route+","
-                     + "'"+routeToAdd.miejsca[i].route_id+"'"
+                     + "'"+routeToAdd.places[i].place_name+"',"
+                        + routeToAdd.places[i].index_number_in_route+","
+                     + "'"+routeToAdd.places[i].route_id+"'"
                         + ")"; 
                 stmt.executeQuery( SQL );
              }
@@ -72,6 +78,12 @@ public class DbCommunication {
         return "OK";
     }
     
+    /**
+     * Returns requested by {@link Route#route_id} Route from database.
+     * Method is called by {@link ApiCommunication#SearchRouteById(java.lang.String) SearchRouteById}
+     * @param routeId
+     * @return {Route} Route
+     */
     public static Route getRouteFromDb (String routeId)
     {
         Connection con = DbCommunication.establishConnection();
@@ -113,9 +125,16 @@ public class DbCommunication {
            
     }
     
-    
+    /**
+     * Returns routes array assosiated to given {@link Route#city_name} from database.
+     * Method called by {@link ApiCommunication#SearchRouteByCityName(java.lang.String) SearchRouteByCityName}
+     * @param CityName
+     * @return
+     */
     public static Route [] getRouteFromDbByCityName (String CityName)
     {
+        // Funkcja jest bardzo długa, ale nie udało mi się jej rozbitć na użyteczne, funkcjonalnie odosobnione funkcje, ani użyć
+          //getRouteFromDatabase z powodu sposobu przekazywania połączenia z bazą danych przez zmienną con. 
         Connection con = DbCommunication.establishConnection();
           
         try {
@@ -146,7 +165,7 @@ public class DbCommunication {
        
         
         
-            // wpisywanie kolejnych tras do wektora tras (wszystkie pola uzupelniane oprocz pola "miejsca")
+            // wpisywanie kolejnych tras do wektora tras (wszystkie pola uzupelniane oprocz pola "places")
             for (int j =0;j<rozmiar;j++) {
                 rsRoute.next();
 
@@ -165,7 +184,7 @@ public class DbCommunication {
                 wektorTras[j] = generatedRoute;
             }
         
-            //Uzupelniane dla kazdej trasy z wektora pola "miejsca"
+            //Uzupelniane dla kazdej trasy z wektora pola "places"
             for(int j = 0;j<rozmiar;j++) {
                 SQL = "SELECT * FROM Places WHERE Route_id="  + "'" + routesIds[j] + "'";
                 ResultSet rsPlace = stmt.executeQuery( SQL );   
@@ -178,7 +197,7 @@ public class DbCommunication {
                     miejsca[i]=nowe;
                     rsPlace.next();
             }
-            wektorTras[j].miejsca = miejsca;
+            wektorTras[j].places = miejsca;
             }
             
             con.close();

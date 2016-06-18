@@ -1,0 +1,11 @@
+Turrest is a project consisting of 2 main components: Touristic site, and Java Rest Api, serving it. 
+Touristing site, allows users to make Routes for touring cities using GoogleMapsApi, and search and view other users Routes.
+
+ *Route* as a term used in documentation - is a set of places on a map with all neceserry information such as: route_id, city_name, route_lengthin_km_, estimated_walk_time_in_mins, number_of_places.
+It is represented in a number of ways depending on envirement it's used in(JavaScript object, JSON, Java obj, data base structure). 
+
+API responds to project site requests, but is also suited to respond to any internet application thank to its RESTful architecture usage.
+Link to github project: https://github.com/Dropsu/RestApi
+
+Site scripts doesnt have documentation, but are well commented. Script: https://github.com/Dropsu/RestApi/blob/master/build/web/GoogleMapsApi.js
+

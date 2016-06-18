@@ -1,40 +1,42 @@
         
-     // *** TWORZENIE MAPY I KOD OBSLUGUJACY TWORZENIE TRASY ***  
+     // Funkcja głównia - Inicjowanie GoogleMapsApi 
         
     function initMap() {
         
-        var miejsca = [];
-        var miejsca_posr = [];
-        var i = -1;
+        var miejsca = []; // przechowuje miejsca na trasie
+        var miejsca_posr = []; // wydzielone miejsca posrednie potrzebne do użytkowania GoogleMapsApi
+        var distance = 0; // przechowuje dlugosc trasy w metrach
+        var i = -1; // ilość miejsc(przy użytym sposobie inkrementacji zaczyna się od -1)
         var travel_mode = google.maps.TravelMode.WALKING;
-        var city_name;
-        var map = new google.maps.Map(document.getElementById('map'), {
+        var city_name; // przechowuje nazwe miasta
+        var map = new google.maps.Map(document.getElementById('map'), { //inicjowanie mapy
             mapTypeControl: false,
             center: {lat: 51.107, lng: 17.038},
             zoom: 15
         });
         var directionsService = new google.maps.DirectionsService;  //wymagane obiekty do DIRECTIONS API
         var directionsDisplay = new google.maps.DirectionsRenderer;
-        directionsDisplay.setMap(map);
+        directionsDisplay.setMap(map); 
         
 
-        var origin_input = document.getElementById('origin-input');
+        var origin_input = document.getElementById('origin-input'); // zmienne przechowujące wartości imputut fieldów
         var city_input = document.getElementById('city-input');
         var route_name = document.getElementById('route-name');
         
-        var origin_autocomplete = new google.maps.places.Autocomplete(origin_input);
+        var origin_autocomplete = new google.maps.places.Autocomplete(origin_input); //aby zapewnieć jednoznaczność używam, uzupełnionych przez google nazw jako kluczowych
         origin_autocomplete.bindTo('bounds', map);
 
 
         var city_autocomplete = new google.maps.places.Autocomplete(city_input);
         city_autocomplete.bindTo('bounds', map);
         var regions = ["(regions)"];
-        city_autocomplete.setTypes(regions); //googlemaps dopusci tylko miasta do wyboru w tym inpucie
+        city_autocomplete.setTypes(regions); //Google maps, w tym inpucie zaproponuje tylko miasta
         
-        var routeAddBClicked = false;
+        var routeAddBClicked = false; //przechowują czy użytkownik chce dodać czy wyszukać trasę
         var routeSearchBClicked = false;
 
 
+        // Wydziela z wektora miejsc miejsca pośrednie
         function setMiejscaPosr ()
         {
             miejsca_posr = [];
@@ -46,7 +48,7 @@
             }
         }
         
-        function addToPointsList (miejsce)
+        function addToPointsList (miejsce) // dodaje punkty trasy do lity obok mapy
         {
             var listItem = document.createElement("li");
             var node = document.createTextNode(miejsce);
@@ -54,47 +56,47 @@
             var element = document.getElementById("points-list");
             element.appendChild(listItem);
         }
-
-        origin_autocomplete.addListener('place_changed', function() {
+        // *** DODAWANIE TRASY
+        origin_autocomplete.addListener('place_changed', function() { //kiedy użytkownic wybierze miejsce z autocomplete...
             document.getElementById('origin-input').value = "";
-            miejsca.push(origin_autocomplete.getPlace().formatted_address);
-            addToPointsList(origin_autocomplete.getPlace().formatted_address);
-            i++;
+            miejsca.push(origin_autocomplete.getPlace().formatted_address);//do wektora miejsca zostaje dodane miejsce
+            addToPointsList(origin_autocomplete.getPlace().formatted_address); //funkcja umieszcza je na liscie obok mapy
+            i++; 
             setMiejscaPosr();
-            route(miejsca[0], miejsca[i], travel_mode,
+            route(miejsca[0], miejsca[i], travel_mode, // zapytanie do GoogleMapsDirections, wyznaczy i narysuje trase
                 directionsService, directionsDisplay, miejsca_posr);
             map.setZoom(17);
         });
         
-        city_autocomplete.addListener('place_changed', function() {
+        city_autocomplete.addListener('place_changed', function() { // reaguje na wybor miasta przez użytkownika
             city_name = city_autocomplete.getPlace().formatted_address;
             if (!city_autocomplete.getPlace().formatted_address) {
-                window.alert("Wybierz jedno z sugerowanych miast w polu tekstowym");
+                window.alert("Wybierz jedno z sugerowanych miast w polu tekstowym"); 
                 return;
             }
             map.setCenter(city_autocomplete.getPlace().geometry.location);
             map.setZoom(15);
         });
 
-        var distance = 0;
+      
         function route(origin_place_id, destination_place_id, travel_mode,
             directionsService, directionsDisplay, miejsca_posr) {
-            if (!origin_place_id) //pozwala sie zaladowac stronie 
+            if (!origin_place_id) //musi być by strona się załadowała
                 return;
 
-            directionsService.route({
+            directionsService.route({ // zapytanie do GoogleMapsDirections, wyznaczy i narysuje trase
                 origin:origin_place_id,
                 destination: destination_place_id,
-                waypoints: miejsca_posr,
+                waypoints: miejsca_posr, // rysuje korzystajac z punktow posrednich, dlatego sa one wydzielane
                 travelMode: travel_mode,
                 optimizeWaypoints: false
             }, function(response, status) {
                     if (status === google.maps.DirectionsStatus.OK)
                     {
                        var j =0;
-                        if(i>1)  {j= i-1;}
+                        if(i>1)  {j= i-1;} // aby dystans dodawal sie poprawnie
                        directionsDisplay.setDirections(response);
-                       distance += response.routes[0]['legs'][j]['distance']['value'];
+                       distance += response.routes[0]['legs'][j]['distance']['value'];// dystans uzyskuje z odpowiedzi GoogleMapsDirections
                        document.getElementById("distance").innerHTML = "Długość: "+(distance/1000).toFixed(2)+" km";
                     }
                         
@@ -103,7 +105,7 @@
                 });
         }
         
-        var submit_button = document.getElementById('submit');
+        var submit_button = document.getElementById('submit'); // przycisk potwierdzajacy akcje, uzależnioną od wybobru użytkownika czy dodać czy szukać tras
         submit_button.addEventListener('click',function () {
             
             if(routeAddBClicked===true)
@@ -113,8 +115,8 @@
                 window.alert("Wybierz jedno z sugerowanych miast w polu tekstowym");
                 return;
             }
-            document.getElementById("map").style.visibility = "visible";
-            $(".controls").css("visibility", "visible");
+            document.getElementById("map").style.visibility = "visible"; // ujawnia okno do dodawania trasy
+            $(".controls").css("visibility", "visible"); // ujawnia przyciski do dodawania trasy
             }
             
             if(routeSearchBClicked===true)
@@ -124,7 +126,7 @@
                 window.alert("Wybierz jedno z sugerowanych miast w polu tekstowym");
                 return;
             }
-                 $.ajax({ 
+                 $.ajax({ // wysyla zapytanie do Api o wektor tras, a nastepnie tworzy i wyswietla je w tabeli
                 type: 'GET', 
                 url: 'http://localhost:8080/Turrest/api/search_route_by_city/'+city_name, 
                 data: { get_param: 'value' }, 
@@ -153,7 +155,7 @@
                         cell4.innerHTML = Math.floor((data[i].estimated_walk_time_in_mins/60).toFixed(2))+" godzin "+
                                 data[i].estimated_walk_time_in_mins%60+" minut";
                         
-                        var button = document.createElement("BUTTON");        
+                        var button = document.createElement("BUTTON"); //dodaje przycisk do każdego wiersza który wyświetli trase   
                         var t = document.createTextNode("Wyświetl Trasę"); 
                         button.onclick = function(){
                             wyswietlOtrzymanaTrase(data[this.id]);
@@ -174,17 +176,17 @@
         
         // *** WYSYLANIE TRAS ***
         
-        var add_route_button = document.getElementById('add-route');
+        var add_route_button = document.getElementById('add-route'); // przycisk wyboru trybu: dodawanie trasy
         add_route_button.addEventListener('click',function () {
            routeAddBClicked=true;  
            routeSearchBClicked=false;
-           $("#city-input_div").css("display", "block");
+           $("#city-input_div").css("display", "block"); // wyswietla lub ukrywa elementy potrzebne w tym trybie
            $("#add_img").css("display", "initial");
            $("#search_img").css("display", "none");
         });
         
        
-        var saveButton = document.getElementById("saveButton");
+        var saveButton = document.getElementById("saveButton"); // przycisk wysylający trase do API
         saveButton.addEventListener('click',function () {
             if(miejsca.length<2)
             {
@@ -201,7 +203,7 @@
             var route = { city_name:city_name,
                 route_id:route_name.value,
                 route_length_km: String((distance/1000).toFixed(2)),
-                estimated_walk_time_in_mins:(distance*0.015)+(miejsca.length*10),
+                estimated_walk_time_in_mins:(distance*0.015)+(miejsca.length*10), // wzor na czas przejscia
                 number_of_places:i+1,
                 places:miejsca };
             $.ajax({
@@ -218,18 +220,18 @@
         // *** ODBIERANIE TRAS ***
         
         
-        function wyswietlOtrzymanaTrase (json) {
-            for(var j=0;j<json.miejsca.length;j++) {
+        function wyswietlOtrzymanaTrase (json) { // funkcja wyświetlająca otzymana trase
+            for(var j=0;j<json.miejsca.length;j++) { // wypelni wektor miejsc pobranymi miejscami
                 miejsca[j]=json.miejsca[j];
                 addToPointsList(miejsca[j]);
                 i++;
             }
             setMiejscaPosr();
-            route(miejsca[0], miejsca[i], travel_mode,
+            route(miejsca[0], miejsca[i], travel_mode,// GoogleMapsApi wyrysuje trase
                 directionsService, directionsDisplay, miejsca_posr);
         }
         
-       var searchButton = document.getElementById("search");
+       var searchButton = document.getElementById("search"); // przycisk wyboru trybu: wyszukiwanie tras
        searchButton.addEventListener('click',function (){
           routeSearchBClicked=true;
           routeAddBClicked=false;
